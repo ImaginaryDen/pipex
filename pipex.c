@@ -22,30 +22,10 @@ int out_cmd(char *file, char **cmd, int fd_in)
 	return (0);
 }
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **envp)
 {
-	int	end[2];
-	int	status;
-	pid_t child_1;
-	pid_t child_2;
+	// char **arg = ft_split("/bin/ls .", ' ');
 
-	pipe(end);
-	child_1 = fork();
-	if (child_1 < 0)
-		perror("Fork :");
-	else if (child_1 == 0)
-	{
-		return (in_cmd(NULL, NULL, end[1]));
-	}
-	child_2 = fork();
-	if (child_2 < 0)
-		perror("Fork :");
-	else if (child_2 == 0)
-	{
-		return(out_cmd(NULL, NULL, end[0]));
-	}
-	close(end[0]);
-	close(end[1]);
-	waitpid(child_1, &status, 0);
-	waitpid(child_2, &status, 0);
+	// execve(arg[0], arg , envp);
+	ft_cmd(0, "ldsfs .", 0, envp);
 }

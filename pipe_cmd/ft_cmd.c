@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-char *ft_get_path(char *path, char *cmd)
+char *ft_full_path(char *path, char *cmd)
 {
 	char	*temp;
 	char	*result;
@@ -11,29 +11,25 @@ char *ft_get_path(char *path, char *cmd)
 	return (result);
 }
 
-int get_nbr_path(char **envp)
+char *ft_get_path(char **envp)
 {
 	int i;
 
 	i = 0;
 	while (ft_strncmp(envp[i], "PATH", 4))
 		i++;
-	return (i);
+	return (ft_split(envp[i] + 5, ':'));
 }
 
-int	ft_cmd(int fd_in, char *cmd, int fd_out, char **envp)
+int	ft_cmd(t_pipe_data *data)
 {
 	int		i;
 	char	*cmd_p;
-	char	*str;
-	char	**paths;
-	char	**cmd_arg;
 
 	str = NULL;
-	dup2(fd_in, STDIN_FILENO);
-	dup2(fd_out, STDOUT_FILENO);
-	paths = ft_split(envp[get_nbr_path(envp)] + 5, ':');
-	cmd_arg = ft_split(cmd, ' ');
+	dup2(data->fd_in_out[1], STDIN_FILENO);
+	dup2(data->fd_in_out[2], STDOUT_FILENO);
+	cmd_arg = ft_split(data->cmd, ' ');
 	i = 0;
 	while (paths && paths[i])
 	{

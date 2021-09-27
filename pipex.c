@@ -10,7 +10,7 @@ int	main(int argc, char **argv, char **envp)
 	int	status;
 
 	fd_1 = open(argv[1], O_RDONLY);
-	fd_2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD);
+	fd_2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, , 0644);
 
 	pipe(end);
 	br_1 = fork();	
@@ -29,7 +29,6 @@ int	main(int argc, char **argv, char **envp)
 		close(end[0]);
 		return (0);
 	}
-
 	close(end[0]);
 	close(end[1]);
 	close(fd_1);

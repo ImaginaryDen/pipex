@@ -1,31 +1,39 @@
 #include "pipex.h"
 
-int in_cmd(char *file, char **cmd, int fd_out)
-{
-	printf("work 1\n");
-	write(fd_out, "Hello !!\n", 11);
-	printf("work 1 end\n");
-	return (0);
-}
-
-int out_cmd(char *file, char **cmd, int fd_in)
-{
-	char str[100];
-	int i;
-
-	i = 0;
-	printf("work 2\n");
-	while(read(fd_in, str + i, 1) > 0 && str[i])
-		i++;
-	printf("mg - %s", str);
-	printf("work 2 end\n");
-	return (0);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
-	// char **arg = ft_split("/bin/ls .", ' ');
+	int end[2];
+	int fd_1;
+	int	fd_2;
+	int br_1;
+	int br_2;
+	int	status;
 
-	// execve(arg[0], arg , envp);
-	ft_cmd(0, "ldsfs .", 0, envp);
+	fd_1 = open(argv[1], O_RDONLY);
+	fd_2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, S_IWRITE | S_IREAD);
+
+	pipe(end);
+	br_1 = fork();	
+	if (br_1)
+	{
+		close(end[0]);
+		ft_cmd(fd_1, argv[2], end[1], envp);
+		close(end[1]);
+		return (0);
+	}
+	br_2 = fork();
+	if (br_2)
+	{
+		close(end[1]);
+		ft_cmd(end[0], argv[3], fd_2, envp);
+		close(end[0]);
+		return (0);
+	}
+
+	close(end[0]);
+	close(end[1]);
+	close(fd_1);
+	close(fd_2);
+	waitpid(br_1, &status, 0);
+	waitpid(br_2, &status, 0);
 }

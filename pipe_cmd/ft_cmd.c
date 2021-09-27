@@ -30,7 +30,8 @@ int	ft_cmd(int fd_in, char *cmd, int fd_out, char **envp)
 	char	**cmd_arg;
 
 	str = NULL;
-	//str = ft_read_fd(fd_in);
+	dup2(fd_in, STDIN_FILENO);
+	dup2(fd_out, STDOUT_FILENO);
 	paths = ft_split(envp[get_nbr_path(envp)] + 5, ':');
 	cmd_arg = ft_split(cmd, ' ');
 	i = 0;
@@ -52,6 +53,8 @@ int	ft_cmd(int fd_in, char *cmd, int fd_out, char **envp)
 		ft_putstr_fd(cmd_arg[0], 1);
 		ft_putstr_fd("\n", 1);
 	}
+	close(fd_in);
+	close(fd_out);
 	if (cmd_p)
 		free(cmd_p);
 	if (str)

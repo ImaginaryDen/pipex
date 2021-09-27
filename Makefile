@@ -15,6 +15,7 @@ RM		= rm -rf
 CC		= gcc
 
 all:		run_libft $(NAME) 
+
 $(NAME):	 ${OBG} $(HEADER) $(LIBFT)
 			$(CC) $(CFLAGS) ${OBG} $(LIBFT) -o $(NAME)
 

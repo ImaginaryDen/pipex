@@ -14,12 +14,13 @@ typedef struct s_pipe_data
 {
 	int		fd_in_out[2];
 	char	**cmd_ard;
+	char	**env;
 }	t_pipe_data;
 
 
-int		ft_cmd(int fd_in, char *cmd, int fd_out, char **envp);
+int		ft_cmd(t_pipe_data *data);
 char	*ft_read_fd(int fd);
 void	ft_free_dable_arr(char **strs);
-char	*ft_get_path(char *path, char *cmd)
+int		ft_init_cmd_data(t_pipe_data *data, char *argv, char **env);
 
 #endif

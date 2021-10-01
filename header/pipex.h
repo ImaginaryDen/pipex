@@ -10,6 +10,8 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
+# define PROGRAM_NAME pipex
+
 typedef struct s_pipe_data
 {
 	int		fd_in_out[2];

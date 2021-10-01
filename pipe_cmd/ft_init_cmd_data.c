@@ -30,14 +30,14 @@ int ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 	data->env = env;
 	data->cmd_ard = ft_split(argv, ' ');
 	paths = ft_get_paths(data->env);
-	while (paths[i])
+	i = -1;
+	while (paths[++i])
 	{
 		path_cmd = ft_full_path(paths[i], data->cmd_ard[0]);
 		if (!access(path_cmd, 1))
 			break;
 		free(path_cmd);
 		path_cmd = NULL;
-		i++;
 	}
 	ft_free_dable_arr(paths);
 	if (path_cmd == NULL)
@@ -45,7 +45,7 @@ int ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 		ft_free_dable_arr(data->cmd_ard);
 		return (-1);
 	}
-	free(data->cmd_ard);
+	free(data->cmd_ard[0]);
 	data->cmd_ard[0] = path_cmd;
 	return (0);
 }

@@ -22,14 +22,18 @@ int init_cmds(t_pipe_data *cmd_1, t_pipe_data *cmd_2, char **argv, char **envp)
 {
 	if (ft_init_cmd_data(cmd_1, argv[2], envp))
 	{
-		perror(argv[2]);
-		return (-1);
+		ft_putstr_fd(PROGRAM_NAME, 2);
+		ft_putstr_fd(": command not found: ", 2);
+		ft_putstr_fd(argv[2], 2);
+		ft_putstr_fd("\n", 2);
 	}
 	if (ft_init_cmd_data(cmd_2, argv[3], envp))
 	{
-		perror(argv[3]);
-		return (-1);
-	}
+		ft_putstr_fd(PROGRAM_NAME, 2);
+		ft_putstr_fd(": command not found: ", 2);;
+		ft_putstr_fd(argv[3], 2);
+		ft_putstr_fd("\n", 2);
+	}	
 	return (0);
 }
 
@@ -42,15 +46,17 @@ int	main(int argc, char **argv, char **envp)
 	int	brench;
 	int end[2];
 
-	if (files_open(argv[1], argv[4], &file_in, &file_out)
-		|| init_cmds(&cmd_1, &cmd_2, argv, envp))
+	if (argc != 5)
+		return (0);
+
+	init_cmds(&cmd_1, &cmd_2, argv, envp);
+	if (files_open(argv[1], argv[4], &file_in, &file_out))
 		return (1);
 	pipe(end);
 	cmd_1.fd_in_out[0] = file_in;
 	cmd_1.fd_in_out[1] = end[1];
 	cmd_2.fd_in_out[0] = end[0];
 	cmd_2.fd_in_out[1] = file_out;
-
 	brench = fork();
 	if (brench)
 	{

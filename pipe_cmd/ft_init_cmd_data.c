@@ -43,6 +43,7 @@ int ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 	if (path_cmd == NULL)
 	{
 		ft_free_dable_arr(data->cmd_ard);
+		data->cmd_ard = NULL;
 		return (-1);
 	}
 	free(data->cmd_ard[0]);

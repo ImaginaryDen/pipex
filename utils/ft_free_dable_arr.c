@@ -12,4 +12,5 @@ void	ft_free_dable_arr(char **strs)
 	}
 	if (strs)
 		free(strs);
+	strs = NULL;
 }

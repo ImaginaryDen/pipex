@@ -10,7 +10,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
-# define PROGRAM_NAME pipex
+# define PROGRAM_NAME "pipex"
 
 typedef struct s_pipe_data
 {

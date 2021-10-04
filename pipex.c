@@ -18,7 +18,7 @@ int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 	return (0);
 }
 
-int init_cmds(t_pipe_data *cmd_1, t_pipe_data *cmd_2, char **argv, char **envp)
+int init_cmds(t_pipe_data *cmd_1, t_pipe_data *cmd_2, char **argv, char **envp) // переписать для бонуса
 {
 	if (ft_init_cmd_data(cmd_1, argv[2], envp))
 	{
@@ -39,41 +39,43 @@ int init_cmds(t_pipe_data *cmd_1, t_pipe_data *cmd_2, char **argv, char **envp)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_pipe_data cmd_1;
-	t_pipe_data cmd_2;
-	int file_in;
-	int file_out;
-	int	brench;
-	int end[2];
+	t_pipe_data	cmds[2];
+	int			file_in;
+	int			file_out;
+	pid_t		brench_1;
+	pid_t		brench_2;
+	int			end[2];
+	int			status;
 
-	if (argc != 5)
-		return (0);
-
-	init_cmds(&cmd_1, &cmd_2, argv, envp);
-	if (files_open(argv[1], argv[4], &file_in, &file_out))
+	if (argc != 5 || files_open(argv[1], argv[4], &file_in, &file_out)
+		|| pipe(end))
 		return (1);
-	pipe(end);
-	cmd_1.fd_in_out[0] = file_in;
-	cmd_1.fd_in_out[1] = end[1];
-	cmd_2.fd_in_out[0] = end[0];
-	cmd_2.fd_in_out[1] = file_out;
-	brench = fork();
-	if (brench)
-	{
-		close(end[0]);
-		ft_cmd(&cmd_1);
-		return (0);
-	}
-	brench = fork();
-	if (brench)
+	init_cmds(&cmds[0], &cmds[1], argv, envp);
+	cmds[0].fd_in_out[0] = file_in;
+	cmds[0].fd_in_out[1] = end[1];
+	cmds[1].fd_in_out[0] = end[0];
+	cmds[1].fd_in_out[1] = file_out;
+	brench_2 = fork();
+	if (!brench_2)
 	{
 		close(end[1]);
-		ft_cmd(&cmd_2);
+		ft_cmd(&cmds[1]);
+		return (0);
+	}
+	brench_1 = fork();
+	if (!brench_1)
+	{
+		close(end[0]);
+		ft_cmd(&cmds[0]);
 		return (0);
 	}
 	close(end[1]);
 	close(end[0]);
 	close(file_out);
 	close(file_in);
+	waitpid(brench_1, &status, 0);
+	waitpid(brench_2, &status, 0);
+	free_cmd(&cmds[1]);
+	free_cmd(&cmds[0]);
 	return (0);
 }

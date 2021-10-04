@@ -20,7 +20,7 @@ $(NAME):	 ${OBG} $(HEADER) $(LIBFT)
 			$(CC) $(CFLAGS) ${OBG} $(LIBFT) -o $(NAME)
 
 run_libft:	
-			@make -C $(PATH_LIB)	
+			@make -C $(PATH_LIB)
 
 %.o: 		%.c	
 			$(CC) $(CFLAGS) -I$(PATH_HEADER) -c $< -o $@

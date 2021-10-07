@@ -18,24 +18,43 @@ int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 	return (0);
 }
 
-int init_cmds(t_pipe_data *cmd_1, t_pipe_data *cmd_2, char **argv, char **envp) // переписать для бонуса
+int init_cmds(t_pipe_data *cmd, int size, char **argv, char **envp)
 {
-	if (ft_init_cmd_data(cmd_1, argv[2], envp))
+	int i;
+
+	i = 0;
+	while (i < size)
 	{
-		ft_putstr_fd(PROGRAM_NAME, 2);
-		ft_putstr_fd(": command not found: ", 2);
-		ft_putstr_fd(argv[2], 2);
-		ft_putstr_fd("\n", 2);
+		if (ft_init_cmd_data(cmd + i, argv[i + 2], envp))
+		{
+			ft_putstr_fd(PROGRAM_NAME, 2);
+			ft_putstr_fd(": command not found: ", 2);
+			ft_putstr_fd(argv[i + 2], 2);
+			ft_putstr_fd("\n", 2);
+		}
+		i++;
 	}
-	if (ft_init_cmd_data(cmd_2, argv[3], envp))
-	{
-		ft_putstr_fd(PROGRAM_NAME, 2);
-		ft_putstr_fd(": command not found: ", 2);;
-		ft_putstr_fd(argv[3], 2);
-		ft_putstr_fd("\n", 2);
-	}	
 	return (0);
 }
+
+int insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
+{
+	int	*end;
+	int	i;
+
+	i = 0;
+	end = malloc(sizeof(int) * size * 2);
+	while (i < size)
+	{
+		pipe(end + i * 2);
+		cmds[i].cmd_ard[1] = (end + i * 2)[0];
+		cmds[i + 1].cmd_ard[0] = (end + i * 2)[1];
+		i++;
+	}
+	cmds[0].cmd_ard[0] = file_in;
+
+	free(end);
+} 
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -50,7 +69,7 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 5 || files_open(argv[1], argv[4], &file_in, &file_out)
 		|| pipe(end))
 		return (1);
-	init_cmds(&cmds[0], &cmds[1], argv, envp);
+	init_cmds(cmds, 2, argv, envp); 
 	cmds[0].fd_in_out[0] = file_in;
 	cmds[0].fd_in_out[1] = end[1];
 	cmds[1].fd_in_out[0] = end[0];

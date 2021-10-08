@@ -11,7 +11,8 @@
 # include <fcntl.h>
 
 # define PROGRAM_NAME "pipex"
-
+# define read_fd 0
+# define write_fd 1
 typedef struct s_pipe_data
 {
 	int		fd_in_out[2];

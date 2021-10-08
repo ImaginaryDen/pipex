@@ -53,16 +53,16 @@ int *insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
 			free(end);
 			return (NULL);
 		}
-		cmds[i].fd_in_out[1] = end[i * 2 + 1];
-		cmds[i + 1].fd_in_out[0] = end[i * 2];
+		cmds[i + 1].fd_in_out[read_fd] = end[i * 2 + read_fd];
+		cmds[i].fd_in_out[write_fd] = end[i * 2 + write_fd];
 		i++;
 	}
-	cmds[0].fd_in_out[0] = file_in;
-	cmds[size - 1].fd_in_out[1] = file_out;
+	cmds[0].fd_in_out[read_fd] = file_in;
+	cmds[size - 1].fd_in_out[write_fd] = file_out;
 	return (end);
 }
 
-int  run_cmds(t_pipe_data *cmds, int *end, int size)
+int  run_cmds(t_pipe_data *cmds, int *end, int size, int *ret)
 {
 	int		i;
 	int		pid;
@@ -82,23 +82,29 @@ int  run_cmds(t_pipe_data *cmds, int *end, int size)
 		}
 		if (!pid)
 		{
-			close(end[i]);
-			ft_cmd(cmds + i);
+			if (i * 2 < (size - 1) * 2)
+				close(end[i * 2]);
+			if (i * 2 - 1 > 0)
+				close(end[i * 2 - 1]);
+			*ret = ft_cmd(cmds + i);
 			return (1);
 		}
 		pid_cmd[i] = pid;
+		if (i && i % 2 != 0)
+		{
+			close(end[i * 2 - 1]);
+			if (i * 2 + 1 < (size - 1) * 2)
+				close(end[i * 2 + 1]);
+		}
 		i++;
 	}
 	i = 0;
-	while (i < (size - 1) * 2)
-	{
-		close(end[i]);
-		i++;
-	}
-	i = 0;
+	close(end[0]);
 	while (i < size)
 	{
 		waitpid(pid_cmd[i], &status, 0);
+		ft_putnbr_fd(pid_cmd[i], 1);
+		ft_putstr_fd(" - pid\n", 1);
 		i++;
 	}
 	free(pid_cmd);
@@ -132,7 +138,7 @@ int	main(int argc, char **argv, char **envp)
 	end = insert_pipe(cmds, argc - 3, file_in, file_out);
 	if (end == NULL)
 		return (1);
-	if (run_cmds(cmds, end, argc - 3) == 1)
+	if (run_cmds(cmds, end, argc - 3, &status) == 1)
 		return (0);
 	close(file_out);
 	close(file_in);

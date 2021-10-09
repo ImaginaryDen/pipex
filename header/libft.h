@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 14:29:31 by tjamis            #+#    #+#             */
-/*   Updated: 2021/05/11 17:31:26 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/09 17:21:57 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
-void	*ft_memset (void *destination, int c, size_t n);
+void	*ft_memset(void *destination, int c, size_t n);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memcpy(void *dest, const void *source, size_t count);
 void	*ft_memccpy(void *dest, const void *source, int ch, size_t count);
-void	*ft_memchr (const void *arr, int c, size_t n);
-int		ft_memcmp (const void *buf1, const void *buf2, size_t count);
+void	*ft_memchr(const void *arr, int c, size_t n);
+int		ft_memcmp(const void *buf1, const void *buf2, size_t count);
 size_t	ft_strlen(const char *s);
 void	*ft_memmove(void *dst, const void *src, size_t len);
 int		ft_tolower(int c);

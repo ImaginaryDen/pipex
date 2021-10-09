@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/09 17:28:06 by tjamis            #+#    #+#             */
+/*   Updated: 2021/10/09 17:36:26 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 {
 	*fd_1 = open(file_1, O_RDONLY);
 	*fd_2 = open(file_2, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
 	if (*fd_1 == -1)
 	{
 		perror(file_1);
@@ -18,9 +29,9 @@ int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 	return (0);
 }
 
-int init_cmds(t_pipe_data *cmd, int size, char **argv, char **envp)
+int	init_cmds(t_pipe_data *cmd, int size, char **argv, char **envp)
 {
-	int i;
+	int	i;
 	int	ret;
 
 	i = 0;
@@ -46,7 +57,7 @@ int init_cmds(t_pipe_data *cmd, int size, char **argv, char **envp)
 	return (0);
 }
 
-int *insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
+int	*insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
 {
 	int	*end;
 	int	i;
@@ -62,73 +73,13 @@ int *insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
 			free(end);
 			return (NULL);
 		}
-		cmds[i + 1].fd_in_out[read_fd] = end[i * 2 + read_fd];
-		cmds[i].fd_in_out[write_fd] = end[i * 2 + write_fd];
+		cmds[i + 1].fd_in_out[READ_FD] = end[i * 2 + READ_FD];
+		cmds[i].fd_in_out[WRITE_FD] = end[i * 2 + WRITE_FD];
 		i++;
 	}
-	cmds[0].fd_in_out[read_fd] = file_in;
-	cmds[size - 1].fd_in_out[write_fd] = file_out;
+	cmds[0].fd_in_out[READ_FD] = file_in;
+	cmds[size - 1].fd_in_out[WRITE_FD] = file_out;
 	return (end);
-}
-
-int  run_cmds(t_pipe_data *cmds, int *end, int size)
-{
-	int		i;
-	int		pid;
-	pid_t	*pid_cmd;
-	int		status;
-
-	pid_cmd = malloc(sizeof(pid_t) * size);
-	i = 0;
-	while (i < size)
-	{
-		pid = fork();
-		if (pid == -1)
-		{
-			free(pid_cmd);
-			perror("fork");
-			return (1);
-		}
-		if (!pid)
-		{
-			if (i * 2 < (size - 1) * 2)
-				close(end[i * 2]);
-			if (i * 2 - 1 > 0)
-				close(end[i * 2 - 1]);
-			if (cmds[i].fd_in_out[read_fd] != -1)
-				ft_cmd(cmds + i);
-			return (1);
-		}
-		pid_cmd[i] = pid;
-		if (i && i % 2 != 0)
-		{
-			close(end[i * 2 - 1]);
-			if (i * 2 + 1 < (size - 1) * 2)
-				close(end[i * 2 + 1]);
-		}
-		i++;
-	}
-	i = 0;
-	close(end[0]);
-	while (i < size)
-	{
-		waitpid(pid_cmd[i], &status, 0);
-		i++;
-	}
-	free(pid_cmd);
-	return (0);
-}
-
-void free_cmds(t_pipe_data *cmds, int size)
-{
-	int i;
-
-	i = 0;
-	while (i < size)
-	{
-		free_cmd(cmds + i);
-		i++;
-	}
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -139,21 +90,20 @@ int	main(int argc, char **argv, char **envp)
 	int			status;
 	int			*end;
 
-
 	if (argc != 5)
 		return (1);
 	files_open(argv[1], argv[argc - 1], &file_in, &file_out);
 	cmds = malloc(sizeof(t_pipe_data) * (argc - 3));
-	init_cmds(cmds, argc - 3, argv, envp); 
+	init_cmds(cmds, argc - 3, argv, envp);
 	end = insert_pipe(cmds, argc - 3, file_in, file_out);
 	if (end == NULL)
 		return (1);
-	if (run_cmds(cmds, end, argc - 3) == 1)
+	if (ft_run_cmds(cmds, end, argc - 3) == 1)
 		return (0);
 	close(file_out);
 	close(file_in);
 	free(end);
-	free_cmds(cmds, argc - 3);
+	ft_free_cmds(cmds, argc - 3);
 	free(cmds);
 	return (0);
 }

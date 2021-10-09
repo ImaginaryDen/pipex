@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_init_cmd_data.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/09 17:27:07 by tjamis            #+#    #+#             */
+/*   Updated: 2021/10/09 17:27:34 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-char *ft_full_path(char *path, char *cmd)
+char	*ft_full_path(char *path, char *cmd)
 {
 	char	*temp;
 	char	*result;
@@ -11,9 +23,9 @@ char *ft_full_path(char *path, char *cmd)
 	return (result);
 }
 
-char **ft_get_paths(char **envp)
+char	**ft_get_paths(char **envp)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (ft_strncmp(envp[i], "PATH", 4))
@@ -21,7 +33,7 @@ char **ft_get_paths(char **envp)
 	return (ft_split(envp[i] + 5, ':'));
 }
 
-char *check_cmd(t_pipe_data *data)
+char	*check_cmd(t_pipe_data *data)
 {
 	int		i;
 	char	**paths;
@@ -33,7 +45,7 @@ char *check_cmd(t_pipe_data *data)
 	{
 		path_cmd = ft_full_path(paths[i], data->cmd_ard[0]);
 		if (!access(path_cmd, X_OK))
-			break;
+			break ;
 		free(path_cmd);
 		path_cmd = NULL;
 		i++;
@@ -42,10 +54,10 @@ char *check_cmd(t_pipe_data *data)
 	return (path_cmd);
 }
 
-int ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
+int	ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 {
-	char *path_cmd;
-	int i;
+	char	*path_cmd;
+	int		i;
 
 	data->env = env;
 	data->cmd_ard = ft_split(argv, ' ');
@@ -64,7 +76,7 @@ int ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 	return (0);
 }
 
-void free_cmd(t_pipe_data *data)
+void	free_cmd(t_pipe_data *data)
 {
 	if (data->cmd_ard)
 	{

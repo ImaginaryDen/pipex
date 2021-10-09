@@ -21,14 +21,23 @@ int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 int init_cmds(t_pipe_data *cmd, int size, char **argv, char **envp)
 {
 	int i;
+	int	ret;
 
 	i = 0;
 	while (i < size)
 	{
-		if (ft_init_cmd_data(cmd + i, argv[i + 2], envp))
+		ret = ft_init_cmd_data(cmd + i, argv[i + 2], envp);
+		if (ret == -1)
 		{
 			ft_putstr_fd(PROGRAM_NAME, 2);
 			ft_putstr_fd(": command not found: ", 2);
+			ft_putstr_fd(argv[i + 2], 2);
+			ft_putstr_fd("\n", 2);
+		}
+		else if (ret == 2)
+		{
+			ft_putstr_fd(PROGRAM_NAME, 2);
+			ft_putstr_fd(": permission denied: ", 2);
 			ft_putstr_fd(argv[i + 2], 2);
 			ft_putstr_fd("\n", 2);
 		}
@@ -62,7 +71,7 @@ int *insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
 	return (end);
 }
 
-int  run_cmds(t_pipe_data *cmds, int *end, int size, int *ret)
+int  run_cmds(t_pipe_data *cmds, int *end, int size)
 {
 	int		i;
 	int		pid;
@@ -86,7 +95,8 @@ int  run_cmds(t_pipe_data *cmds, int *end, int size, int *ret)
 				close(end[i * 2]);
 			if (i * 2 - 1 > 0)
 				close(end[i * 2 - 1]);
-			*ret = ft_cmd(cmds + i);
+			if (cmds[i].fd_in_out[read_fd] != -1)
+				ft_cmd(cmds + i);
 			return (1);
 		}
 		pid_cmd[i] = pid;
@@ -103,8 +113,6 @@ int  run_cmds(t_pipe_data *cmds, int *end, int size, int *ret)
 	while (i < size)
 	{
 		waitpid(pid_cmd[i], &status, 0);
-		ft_putnbr_fd(pid_cmd[i], 1);
-		ft_putstr_fd(" - pid\n", 1);
 		i++;
 	}
 	free(pid_cmd);
@@ -131,14 +139,16 @@ int	main(int argc, char **argv, char **envp)
 	int			status;
 	int			*end;
 
-	if (files_open(argv[1], argv[argc - 1], &file_in, &file_out))
+
+	if (argc != 5)
 		return (1);
+	files_open(argv[1], argv[argc - 1], &file_in, &file_out);
 	cmds = malloc(sizeof(t_pipe_data) * (argc - 3));
 	init_cmds(cmds, argc - 3, argv, envp); 
 	end = insert_pipe(cmds, argc - 3, file_in, file_out);
 	if (end == NULL)
 		return (1);
-	if (run_cmds(cmds, end, argc - 3, &status) == 1)
+	if (run_cmds(cmds, end, argc - 3) == 1)
 		return (0);
 	close(file_out);
 	close(file_in);

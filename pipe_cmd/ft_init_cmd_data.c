@@ -51,6 +51,8 @@ int ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 	data->cmd_ard = ft_split(argv, ' ');
 	if (!access(data->cmd_ard[0], X_OK))
 		return (0);
+	if (!access(data->cmd_ard[0], F_OK))
+		return (2);
 	path_cmd = check_cmd(data);
 	if (path_cmd == NULL)
 	{

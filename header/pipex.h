@@ -9,6 +9,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+# include <errno.h>
 
 # define PROGRAM_NAME "pipex"
 # define read_fd 0

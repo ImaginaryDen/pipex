@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:27:07 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/09 17:27:34 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/09 20:12:32 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,20 +57,23 @@ char	*check_cmd(t_pipe_data *data)
 int	ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 {
 	char	*path_cmd;
-	int		i;
 
 	data->env = env;
 	data->cmd_ard = ft_split(argv, ' ');
-	if (!access(data->cmd_ard[0], X_OK))
+	if (data->cmd_ard == NULL)
+		return (-1);
+	if (!access(data->cmd_ard[0], X_OK)
+		&& (data->cmd_ard[0][0] == '.' || data->cmd_ard[0][0] == '/'))
 		return (0);
-	if (!access(data->cmd_ard[0], F_OK))
+	if (access(data->cmd_ard[0], X_OK)
+		&& (data->cmd_ard[0][0] == '.' || data->cmd_ard[0][0] == '/'))
+		return (1);
+	if (!access(data->cmd_ard[0], F_OK)
+		&& (data->cmd_ard[0][0] == '.' || data->cmd_ard[0][0] == '/'))
 		return (2);
 	path_cmd = check_cmd(data);
 	if (path_cmd == NULL)
-	{
-		free_cmd(data);
-		return (-1);
-	}
+		return (1);
 	free(data->cmd_ard[0]);
 	data->cmd_ard[0] = path_cmd;
 	return (0);

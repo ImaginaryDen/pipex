@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:36:43 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/09 17:56:11 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/09 20:19:46 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,25 @@
 int	ft_run_cmds(t_pipe_data *cmds, int *end, int size)
 {
 	int		i;
-	int		pid;
 	pid_t	*pid_cmd;
-	int		status;
 
 	pid_cmd = malloc(sizeof(pid_t) * size);
+	if (!pid_cmd)
+		return (0);
 	i = 0;
 	while (i < size)
 	{
-		pid = fork();
-		if (pid == -1)
+		pid_cmd[i] = fork();
+		if (pid_cmd[i] == -1)
 		{
 			free(pid_cmd);
 			perror("fork");
 			return (1);
 		}
-		if (!pid)
+		if (!pid_cmd[i])
 			return (ft_run_fork(i, end, cmds, size));
 		ft_close_pipe(i, end, size);
-		pid_cmd[i++] = pid;
+		i++;
 	}
 	close(end[0]);
 	ft_wait_all_pid(pid_cmd, size);

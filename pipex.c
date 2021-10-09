@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:28:06 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/09 17:36:26 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/09 20:15:29 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,32 +29,28 @@ int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 	return (0);
 }
 
-int	init_cmds(t_pipe_data *cmd, int size, char **argv, char **envp)
+t_pipe_data	*init_cmds(int size, char **argv, char **envp)
 {
-	int	i;
-	int	ret;
+	int			i;
+	int			ret;
+	t_pipe_data	*cmd;
 
 	i = 0;
+	cmd = malloc(sizeof(t_pipe_data) * size);
+	if (!cmd)
+		return (NULL);
 	while (i < size)
 	{
 		ret = ft_init_cmd_data(cmd + i, argv[i + 2], envp);
 		if (ret == -1)
-		{
-			ft_putstr_fd(PROGRAM_NAME, 2);
-			ft_putstr_fd(": command not found: ", 2);
-			ft_putstr_fd(argv[i + 2], 2);
-			ft_putstr_fd("\n", 2);
-		}
+			return (NULL);
+		else if (ret == 1)
+			ft_print_error(": command not found: ", argv[i + 2]);
 		else if (ret == 2)
-		{
-			ft_putstr_fd(PROGRAM_NAME, 2);
-			ft_putstr_fd(": permission denied: ", 2);
-			ft_putstr_fd(argv[i + 2], 2);
-			ft_putstr_fd("\n", 2);
-		}
+			ft_print_error(": permission denied: ", argv[i + 2]);
 		i++;
 	}
-	return (0);
+	return (cmd);
 }
 
 int	*insert_pipe(t_pipe_data *cmds, int size, int file_in, int file_out)
@@ -87,18 +83,14 @@ int	main(int argc, char **argv, char **envp)
 	t_pipe_data	*cmds;
 	int			file_in;
 	int			file_out;
-	int			status;
 	int			*end;
 
 	if (argc != 5)
 		return (1);
 	files_open(argv[1], argv[argc - 1], &file_in, &file_out);
-	cmds = malloc(sizeof(t_pipe_data) * (argc - 3));
-	init_cmds(cmds, argc - 3, argv, envp);
+	cmds = init_cmds(argc - 3, argv, envp);
 	end = insert_pipe(cmds, argc - 3, file_in, file_out);
-	if (end == NULL)
-		return (1);
-	if (ft_run_cmds(cmds, end, argc - 3) == 1)
+	if (cmds && end && ft_run_cmds(cmds, end, argc - 3) == 1)
 		return (0);
 	close(file_out);
 	close(file_in);

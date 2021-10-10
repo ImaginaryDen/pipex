@@ -67,7 +67,7 @@ void	ft_free_cmds(t_pipe_data *cmds, int size)
 	int	i;
 
 	i = 0;
-	while (i < size)
+	while (cmds + i && i < size)
 	{
 		free_cmd(cmds + i);
 		i++;

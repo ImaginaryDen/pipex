@@ -14,19 +14,22 @@
 
 int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 {
+	int ret;
+
 	*fd_1 = open(file_1, O_RDONLY);
 	*fd_2 = open(file_2, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	ret = 0;
 	if (*fd_1 == -1)
 	{
 		perror(file_1);
-		return (-1);
+		ret = -1;
 	}
 	if (*fd_2 == -1)
 	{
 		perror(file_2);
-		return (-1);
+		ret = -1;
 	}
-	return (0);
+	return (ret);
 }
 
 t_pipe_data	*init_cmds(int size, char **argv, char **envp)

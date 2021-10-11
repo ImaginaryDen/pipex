@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 19:09:04 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/09 19:09:05 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/11 22:38:56 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE   128
+#  define BUFFER_SIZE   1
 # endif
 
 # include <stdlib.h>

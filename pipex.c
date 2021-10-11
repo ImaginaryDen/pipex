@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:28:06 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/11 21:58:30 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/11 22:53:46 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,11 @@ int	here_doc(char *limit, int *end, char *file_2, int *fd_2)
 	{
 		close(end[0]);
 		str = get_next_line(0);
-		while (str && (ft_strncmp(str, limit, len) || str[len] != '\n'))
+		while (str)
 		{
-			read(end[1], str, ft_strlen(str));
+			if (!ft_strncmp(str, limit, len) && str[len] != '\n')
+				break ;
+			write(end[1], str, ft_strlen(str));
 			free(str);
 			str = get_next_line(0);
 		}
@@ -110,6 +112,7 @@ int	here_doc(char *limit, int *end, char *file_2, int *fd_2)
 		close(end[1]);
 		exit(0);
 	}
+	close(end[1]);
 	return (pid);
 }
 

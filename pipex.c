@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:28:06 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/09 20:15:29 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/11 20:58:50 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	files_open(char *file_1, char *file_2, int *fd_1, int *fd_2)
 {
-	int ret;
+	int	ret;
 
 	*fd_1 = open(file_1, O_RDONLY);
 	*fd_2 = open(file_2, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -91,14 +91,14 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 5)
 		return (1);
 	files_open(argv[1], argv[argc - 1], &file_in, &file_out);
-	cmds = init_cmds(argc - 3, argv, envp);
-	end = insert_pipe(cmds, argc - 3, file_in, file_out);
-	if (cmds && end && ft_run_cmds(cmds, end, argc - 3) == 1)
+	cmds = init_cmds((argc - 3), argv, envp);
+	end = insert_pipe(cmds, (argc - 3), file_in, file_out);
+	if (cmds && end && ft_run_cmds(cmds, end, (argc - 3)) == 1)
 		return (0);
 	close(file_out);
 	close(file_in);
 	free(end);
-	ft_free_cmds(cmds, argc - 3);
+	ft_free_cmds(cmds, (argc - 3));
 	free(cmds);
 	return (0);
 }

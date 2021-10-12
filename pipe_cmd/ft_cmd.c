@@ -6,22 +6,26 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:27:05 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/11 20:55:52 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/12 23:10:54 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_cmd(t_pipe_data *data)
+int	ft_cmd(t_pipe_data *data, int *end, int i, int size)
 {
 	int		ret;
 
-	dup2(data->fd_in_out[READ_FD], STDIN_FILENO);
-	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
+	//data[i].cmd_ard[0][0] = 'a';
+	// ft_putstr_fd(data[i].cmd_ard[0], 1);
+	// ft_putstr_fd("\n", 1);
+	dup2(data[i].fd_in_out[READ_FD], STDIN_FILENO);
+	dup2(data[i].fd_in_out[WRITE_FD], STDOUT_FILENO);
 	ret = 0;
-	if (data->cmd_ard != NULL)
-		ret = execve(data->cmd_ard[0], data->cmd_ard, data->env);
-	close(data->fd_in_out[READ_FD]);
-	close(data->fd_in_out[WRITE_FD]);
+	if (data[i].cmd_ard != NULL)
+		ret = execve(data[i].cmd_ard[0], data[i].cmd_ard, data[i].env);
+	ft_free_all(&data, size, end);
 	return (ret);
+	//close(data[i].fd_in_out[READ_FD]);
+	//close(data[i].fd_in_out[WRITE_FD]);
 }

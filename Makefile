@@ -13,7 +13,7 @@ SRCS		=	$(SRC_GNL) $(SRC_UTL) $(SRC_PIPE) pipex.c
 OBG			=	$(SRCS:%.c=%.o)
 
 SRCS_BONUS	=	$(SRC_GNL) $(SRC_UTL) $(SRC_PIPE) pipex_bonus.c
-OBG_BONUS	=	$(SRCS:%.c=%.o)
+OBG_BONUS	=	$(SRCS_BONUS:%.c=%.o)
 
 CFLAGS		=	#-Wall -Wextra -Werror 
 RM			=	rm -rf
@@ -27,7 +27,7 @@ $(NAME):	 ${OBG} $(HEADER) $(LIBFT)
 bonus:		run_libft $(NAME_BONUS)
 
 $(NAME_BONUS):	${OBG_BONUS} $(HEADER) $(LIBFT)
-				$(CC) $(CFLAGS) ${OBG} $(LIBFT) -o $(NAME_BONUS)
+				$(CC) $(CFLAGS) ${OBG_BONUS} $(LIBFT) -o $(NAME_BONUS)
 
 run_libft:	
 			@make -C $(PATH_LIB)

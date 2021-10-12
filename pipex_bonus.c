@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:28:06 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/12 20:51:32 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/12 22:51:26 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,19 +89,25 @@ int	main(int argc, char **argv, char **envp)
 	t_pipe_data	*cmds;
 	int			file[3];
 	int			*end;
+	int			flag;
 	int			pid;
 
-	if (argc != 5)
+	if (argc < 5)
 		return (1);
-	files_open(argv[1], argv[argc - 1], file, &file[2]);
-	cmds = init_cmds(argc - 3, argv, envp);
-	end = insert_pipe(cmds, argc - 3, file, file[2]);
-	pid = 0;
-	if (cmds && end && ft_run_cmds(cmds, end, argc - 3, pid) == 1)
+	flag = 0;
+	if (ft_strncmp(argv[1], "here_doc", 9))
+		files_open(argv[1], argv[argc - 1], file, &file[2]);
+	else
+	{
+		flag = 1;
+		pid = here_doc(argv[2], file, argv[argc - 1], &file[2]);
+	}
+	cmds = init_cmds((argc - 3 - flag), argv + flag, envp);
+	end = insert_pipe(cmds, (argc - 3 - flag), file, file[2]);
+	if (cmds && end && ft_run_cmds(cmds, end, (argc - 3 - flag), pid) == 1)
 		return (0);
 	close(file[2]);
 	close(file[0]);
-	ft_free_all(&cmds, argc - 3);
-	free(end);
+	ft_free_all(&cmds, (argc - 3 - flag), end);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:36:43 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/12 19:58:11 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/12 23:18:24 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,12 @@ int	ft_run_cmds(t_pipe_data *cmds, int *end, int size, int pid)
 			return (1);
 		}
 		if (!pid_cmd[i])
-			return (ft_run_fork(i, end, cmds));
+		{
+			ft_run_fork(i, end, cmds, size);
+			free(pid_cmd);
+			sleep(100);
+			return (0);
+		}
 		ft_close_pipe(i, end);
 		i++;
 	}
@@ -40,12 +45,12 @@ int	ft_run_cmds(t_pipe_data *cmds, int *end, int size, int pid)
 	return (0);
 }
 
-int	ft_run_fork(int i, int *end, t_pipe_data *cmds)
+int	ft_run_fork(int i, int *end, t_pipe_data *cmds, int size)
 {
 	close(end[(i + 1) * 2]);
 	close(end[(i + 1) * 2 - 1]);
 	if (cmds[i].fd_in_out[READ_FD] != -1 && cmds[i].fd_in_out[WRITE_FD] != -1)
-		ft_cmd(cmds + i);
+		ft_cmd(cmds, end, i, size);
 	return (1);
 }
 
@@ -58,7 +63,7 @@ void	ft_close_pipe(int i, int *end)
 	}
 }
 
-void	ft_free_all(t_pipe_data **cmds, int size)
+void	ft_free_all(t_pipe_data **cmds, int size, int *end)
 {
 	int	i;
 
@@ -69,5 +74,6 @@ void	ft_free_all(t_pipe_data **cmds, int size)
 		i++;
 	}
 	free(*cmds);
+	free(end);
 	*cmds = NULL;
 }

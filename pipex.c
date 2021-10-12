@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:28:06 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/11 22:53:46 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/12 20:04:08 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,43 +84,10 @@ int	*insert_pipe(t_pipe_data *cmds, int size, int *file_in, int file_out)
 	return (end);
 }
 
-int	here_doc(char *limit, int *end, char *file_2, int *fd_2)
-{
-	char		*str;
-	pid_t		pid;
-	const int	len = ft_strlen(limit);
-
-	*fd_2 = open(file_2, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (*fd_2 == -1)
-		perror(file_2);
-	pipe(end);
-	pid = fork();
-	if (!pid)
-	{
-		close(end[0]);
-		str = get_next_line(0);
-		while (str)
-		{
-			if (!ft_strncmp(str, limit, len) && str[len] != '\n')
-				break ;
-			write(end[1], str, ft_strlen(str));
-			free(str);
-			str = get_next_line(0);
-		}
-		if (str)
-			free(str);
-		close(end[1]);
-		exit(0);
-	}
-	close(end[1]);
-	return (pid);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipe_data	*cmds;
-	int			file_in[2];
-	int			file_out;
+	int			file[3];
 	int			*end;
 	int			flag;
 	int			pid;
@@ -129,20 +96,19 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	flag = 0;
 	if (ft_strncmp(argv[1], "here_doc", 9))
-		files_open(argv[1], argv[argc - 1], file_in, &file_out);
+		files_open(argv[1], argv[argc - 1], file, &file[2]);
 	else
 	{
 		flag = 1;
-		pid = here_doc(argv[2], file_in, argv[argc - 1], &file_out);
+		pid = here_doc(argv[2], file, argv[argc - 1], &file[2]);
 	}
 	cmds = init_cmds((argc - 3 - flag), argv + flag, envp);
-	end = insert_pipe(cmds, (argc - 3 - flag), file_in, file_out);
+	end = insert_pipe(cmds, (argc - 3 - flag), file, file[2]);
 	if (cmds && end && ft_run_cmds(cmds, end, (argc - 3 - flag), pid) == 1)
 		return (0);
-	close(file_out);
-	close(file_in[0]);
+	close(file[2]);
+	close(file[0]);
+	ft_free_all(&cmds, (argc - 3 - flag));
 	free(end);
-	ft_free_cmds(cmds, (argc - 3 - flag));
-	free(cmds);
 	return (0);
 }

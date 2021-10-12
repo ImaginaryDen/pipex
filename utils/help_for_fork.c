@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:36:43 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/11 22:32:38 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/12 19:58:11 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,16 @@ void	ft_close_pipe(int i, int *end)
 	}
 }
 
-void	ft_free_cmds(t_pipe_data *cmds, int size)
+void	ft_free_all(t_pipe_data **cmds, int size)
 {
 	int	i;
 
 	i = 0;
-	while (cmds + i && i < size)
+	while (*cmds + i && i < size)
 	{
-		free_cmd(cmds + i);
+		free_cmd(*cmds + i);
 		i++;
 	}
+	free(*cmds);
+	*cmds = NULL;
 }

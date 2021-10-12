@@ -95,6 +95,9 @@ int	main(int argc, char **argv, char **envp)
 	if (argc < 5)
 		return (1);
 	flag = 0;
+	file[0] = -1;
+	file[1] = -1;
+	file[2] = -1;
 	if (ft_strncmp(argv[1], "here_doc", 9))
 		files_open(argv[1], argv[argc - 1], file, &file[2]);
 	else
@@ -102,6 +105,7 @@ int	main(int argc, char **argv, char **envp)
 		flag = 1;
 		pid = here_doc(argv[2], file, argv[argc - 1], &file[2]);
 	}
+	pid = 0;
 	cmds = init_cmds((argc - 3 - flag), argv + flag, envp);
 	end = insert_pipe(cmds, (argc - 3 - flag), file, file[2]);
 	if (cmds && end && ft_run_cmds(cmds, end, (argc - 3 - flag), pid) == 1)

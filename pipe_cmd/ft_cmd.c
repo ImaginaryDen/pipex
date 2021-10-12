@@ -24,7 +24,8 @@ int	ft_cmd(t_pipe_data *data, int *end, int i, int size)
 	ret = 0;
 	if (data[i].cmd_ard != NULL)
 		ret = execve(data[i].cmd_ard[0], data[i].cmd_ard, data[i].env);
-	ft_free_all(&data, size, end);
+	//ft_free_all(&data, size, end);
+	//errno = 0;
 	return (ret);
 	//close(data[i].fd_in_out[READ_FD]);
 	//close(data[i].fd_in_out[WRITE_FD]);

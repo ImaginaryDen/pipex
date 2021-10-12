@@ -34,7 +34,6 @@ int	ft_run_cmds(t_pipe_data *cmds, int *end, int size, int pid)
 		{
 			ft_run_fork(i, end, cmds, size);
 			free(pid_cmd);
-			sleep(100);
 			return (0);
 		}
 		ft_close_pipe(i, end);
@@ -47,8 +46,10 @@ int	ft_run_cmds(t_pipe_data *cmds, int *end, int size, int pid)
 
 int	ft_run_fork(int i, int *end, t_pipe_data *cmds, int size)
 {
-	close(end[(i + 1) * 2]);
-	close(end[(i + 1) * 2 - 1]);
+	if (i + 1 < size && end[(i + 1) * 2] != -1)
+		close(end[(i + 1) * 2]);
+	if (end[(i + 1) * 2 - 1] != -1)
+		close(end[(i + 1) * 2 - 1]);
 	if (cmds[i].fd_in_out[READ_FD] != -1 && cmds[i].fd_in_out[WRITE_FD] != -1)
 		ft_cmd(cmds, end, i, size);
 	return (1);

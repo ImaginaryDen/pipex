@@ -101,7 +101,6 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	close(file[2]);
 	close(file[0]);
-	ft_free_all(&cmds, argc - 3);
-	free(end);
+	ft_free_all(&cmds, argc - 3, end);
 	return (0);
 }

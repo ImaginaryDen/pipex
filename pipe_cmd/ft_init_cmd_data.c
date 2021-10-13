@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:27:07 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/12 22:17:01 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/13 18:32:05 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ char	*check_cmd(t_pipe_data *data)
 	return (path_cmd);
 }
 
+int	is_file_path(char *file)
+{
+	return (file[0] == '/' || (file[0] == '.' && file[1] == '/'));
+}
+
 int	ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 {
 	char	*path_cmd;
@@ -63,13 +68,13 @@ int	ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 	if (data->cmd_ard == NULL)
 		return (-1);
 	if (!access(data->cmd_ard[0], X_OK)
-		&& (data->cmd_ard[0][0] == '.' || data->cmd_ard[0][0] == '/'))
+		&& is_file_path(data->cmd_ard[0]))
 		return (0);
 	if (access(data->cmd_ard[0], X_OK)
-		&& (data->cmd_ard[0][0] == '.' || data->cmd_ard[0][0] == '/'))
+		&& is_file_path(data->cmd_ard[0]))
 		return (1);
 	if (!access(data->cmd_ard[0], F_OK)
-		&& (data->cmd_ard[0][0] == '.' || data->cmd_ard[0][0] == '/'))
+		&& is_file_path(data->cmd_ard[0]))
 		return (2);
 	path_cmd = check_cmd(data);
 	if (path_cmd == NULL)
@@ -77,13 +82,4 @@ int	ft_init_cmd_data(t_pipe_data *data, char *argv, char **env)
 	free(data->cmd_ard[0]);
 	data->cmd_ard[0] = path_cmd;
 	return (0);
-}
-
-void	free_cmd(t_pipe_data *data)
-{
-	if (data->cmd_ard)
-	{
-		ft_free_dable_arr(data->cmd_ard);
-		data->cmd_ard = NULL;
-	}
 }

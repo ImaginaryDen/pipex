@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 20:01:28 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/12 20:01:34 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/13 16:53:38 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ void	here_doc_gnl(int *end, char *limit)
 	exit(0);
 }
 
-int	here_doc(char *limit, int *end, char *file_2, int *fd_2)
+int	here_doc(char *limit, int *end, char *file_2)
 {
 	pid_t		pid;
 
-	*fd_2 = open(file_2, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (*fd_2 == -1)
+	end[2] = open(file_2, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (end[2] == -1)
 		perror(file_2);
 	pipe(end);
 	pid = fork();

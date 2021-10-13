@@ -15,7 +15,7 @@ OBG			=	$(SRCS:%.c=%.o)
 SRCS_BONUS	=	$(SRC_GNL) $(SRC_UTL) $(SRC_PIPE) pipex_bonus.c
 OBG_BONUS	=	$(SRCS_BONUS:%.c=%.o)
 
-CFLAGS		=	#-Wall -Wextra -Werror 
+CFLAGS		=	-Wall -Wextra -Werror 
 RM			=	rm -rf
 CC			=	gcc
 

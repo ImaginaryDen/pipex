@@ -6,13 +6,13 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:27:05 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/13 18:35:48 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/13 19:51:07 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_cmd(t_pipe_data *data, int *end, int i)
+int	ft_cmd(t_pipe_data *data, int i)
 {
 	int		ret;
 

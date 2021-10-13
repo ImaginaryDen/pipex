@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:36:43 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/13 19:24:15 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/13 19:51:51 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	ft_run_cmds(t_pipe_data *cmds, int *end, int size, int pid)
 			break ;
 		if (!pid_cmd[i])
 			ft_run_fork(i, end, cmds, size);
-		ft_close_pipe(i, end, size);
+		ft_close_pipe(i, end);
 		i++;
 	}
 	ft_wait_all_pid(pid_cmd, size, pid);
@@ -55,11 +55,11 @@ void	ft_run_fork(int i, int *end, t_pipe_data *cmds, int size)
 		close(end[(i + 1) * 2]);
 	if (end[(i + 1) * 2 - 1] != -1)
 		close(end[(i + 1) * 2 - 1]);
-	ft_cmd(cmds, end, i);
+	ft_cmd(cmds, i);
 	exit(EXIT_SUCCESS);
 }
 
-void	ft_close_pipe(int i, int *end, int size)
+void	ft_close_pipe(int i, int *end)
 {
 	if (i)
 	{

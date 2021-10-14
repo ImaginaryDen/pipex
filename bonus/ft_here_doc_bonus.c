@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 20:01:28 by tjamis            #+#    #+#             */
-/*   Updated: 2021/10/14 16:39:14 by tjamis           ###   ########.fr       */
+/*   Updated: 2021/10/14 17:08:48 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	here_doc_gnl(int *end, char *limit)
 	const int	len = ft_strlen(limit);
 
 	close(end[0]);
-	ft_putstr_fd("> ", 1);
 	str = get_next_line(0);
 	while (str)
 	{
@@ -26,7 +25,6 @@ void	here_doc_gnl(int *end, char *limit)
 			break ;
 		write(end[1], str, ft_strlen(str));
 		free(str);
-		ft_putstr_fd("> ", 1);
 		str = get_next_line(0);
 	}
 	if (str)
@@ -47,5 +45,6 @@ int	here_doc(char *limit, int *end, char *file_2)
 	if (!pid)
 		here_doc_gnl(end, limit);
 	close(end[1]);
+	wait(NULL);
 	return (pid);
 }

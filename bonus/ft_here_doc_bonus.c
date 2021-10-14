@@ -18,6 +18,7 @@ void	here_doc_gnl(int *end, char *limit)
 	const int	len = ft_strlen(limit);
 
 	close(end[0]);
+	ft_putstr_fd("> ", 1);
 	str = get_next_line(0);
 	while (str)
 	{
@@ -25,6 +26,7 @@ void	here_doc_gnl(int *end, char *limit)
 			break ;
 		write(end[1], str, ft_strlen(str));
 		free(str);
+		ft_putstr_fd("> ", 1);
 		str = get_next_line(0);
 	}
 	if (str)

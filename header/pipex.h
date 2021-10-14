@@ -35,7 +35,6 @@ typedef struct s_pipe_data
 }	t_pipe_data;
 
 int		ft_cmd(t_pipe_data *data, int i);
-char	*ft_read_fd(int fd);
 void	ft_free_dable_arr(char **strs);
 int		ft_init_cmd_data(t_pipe_data *data, char *argv, char **env);
 void	free_cmd(t_pipe_data *data);
